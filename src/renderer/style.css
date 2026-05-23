@@ -65,3 +65,25 @@ body { font-family: system-ui; background: #f6f6f6; }
 .preview p { margin: 0.8em 0; }
 .preview code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
 .preview pre { background: #222; color: #fff; padding: 16px; border-radius: 8px; overflow-x: auto; }
+
+/* 图片画廊模式 - 横向滚动查看 */
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0;
+  overflow-x: auto;
+  background: #fafafa;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+.image-gallery img {
+  max-height: 200px;
+  width: auto;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.image-gallery img:hover {
+  transform: scale(1.02);
+}

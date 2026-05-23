@@ -98,6 +98,7 @@ async function loadContentToTab(tabIndex: number, address: string, content: stri
   preview.innerHTML = html as string
   highlightCode()
   setupAllLinks()
+  setupImageGallery()
   console.log('Tab content loaded:', address)
 }
 
@@ -134,6 +135,7 @@ async function renderTab(tabIndex: number) {
   preview.innerHTML = html
   highlightCode()
   setupAllLinks()
+  setupImageGallery()
   updateTabBar()
   updateNavButtons(tabIndex)
 }
@@ -143,6 +145,29 @@ function highlightCode() {
   preview.querySelectorAll('pre code').forEach((block) => {
     hljs.highlightElement(block as HTMLElement)
   })
+}
+
+// 图片画廊模式 - 将所有图片横向排列展示
+function setupImageGallery() {
+  const images = preview.querySelectorAll('img')
+  if (images.length === 0) return
+
+  console.log('setupImageGallery: found', images.length, 'images')
+
+  // 收集所有图片元素
+  const imageArray = Array.from(images)
+
+  // 创建画廊容器
+  const galleryContainer = document.createElement('div')
+  galleryContainer.className = 'image-gallery'
+
+  // 将所有图片移入画廊
+  imageArray.forEach(img => {
+    galleryContainer.appendChild(img)
+  })
+
+  // 插入到预览区的开头
+  preview.insertBefore(galleryContainer, preview.firstChild)
 }
 
 // 智能链接处理 - 统一处理所有链接
