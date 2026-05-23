@@ -77,7 +77,14 @@ function getAddressDisplayName(address: string): string {
 // 查找已存在的Tab（通过地址精确匹配）
 function findTabByAddress(address: string): number {
   const targetId = generateAddressId(address)
-  return tabs.findIndex(t => generateAddressId(t.filePath) === targetId)
+  const foundIndex = tabs.findIndex(t => {
+    const tabId = generateAddressId(t.filePath)
+    const match = tabId === targetId
+    console.log('Comparing tab:', tabId, 'vs target:', targetId, '=', match)
+    return match
+  })
+  console.log('findTabByAddress:', address, '-> index:', foundIndex, 'tabs count:', tabs.length)
+  return foundIndex
 }
 
 // 内容加载与渲染
@@ -167,7 +174,7 @@ function setupAllLinks() {
       }
 
       // 智能Tab管理：决定是切换还是新建
-      await smartTabOpen(targetAddress, isMDFile(targetAddress))
+      await smartTabOpen(targetAddress)
     })
   })
 }
@@ -203,31 +210,23 @@ function isMDFile(address: string): boolean {
 }
 
 // 智能Tab打开逻辑
-async function smartTabOpen(address: string, forceNewTab: boolean = false) {
-  const addressId = generateAddressId(address)
-
+async function smartTabOpen(address: string) {
   console.log('smartTabOpen:', {
     address,
-    addressId,
-    forceNewTab,
     existingTabs: tabs.map(t => ({ id: t.id, path: t.filePath }))
   })
 
-  // MD文档：强制新建Tab，不复用
-  if (forceNewTab) {
-    createNewTab(address)
+  // 先查找是否已存在该地址的Tab
+  const existingIndex = findTabByAddress(address)
+  if (existingIndex >= 0) {
+    console.log('Found existing tab at index:', existingIndex, '- switching')
+    switchToTab(existingIndex)
     return
   }
 
-  // 非MD文档：先查找已存在的Tab
-  const existingIndex = findTabByAddress(address)
-  if (existingIndex >= 0) {
-    console.log('Found existing tab, switching to index:', existingIndex)
-    switchToTab(existingIndex)
-  } else {
-    console.log('No existing tab, creating new')
-    createNewTab(address)
-  }
+  // 不存在则新建Tab
+  console.log('No existing tab, creating new')
+  createNewTab(address)
 }
 
 // 创建新Tab
