@@ -147,27 +147,25 @@ function highlightCode() {
   })
 }
 
-// 图片画廊模式 - 将所有图片横向排列展示
+// 图片画廊模式 - 每个图片单独横向展示，保持文档位置
 function setupImageGallery() {
-  const images = preview.querySelectorAll('img')
-  if (images.length === 0) return
+  const allImages = Array.from(preview.querySelectorAll('img'))
+  if (allImages.length === 0) return
 
-  console.log('setupImageGallery: found', images.length, 'images')
+  console.log('setupImageGallery: found', allImages.length, 'images')
 
-  // 收集所有图片元素
-  const imageArray = Array.from(images)
+  // 为每个图片创建一个画廊容器并包裹它
+  allImages.forEach((img, index) => {
+    // 检查是否已经被包裹
+    if (img.parentElement?.classList.contains('image-gallery')) return
 
-  // 创建画廊容器
-  const galleryContainer = document.createElement('div')
-  galleryContainer.className = 'image-gallery'
+    const gallery = document.createElement('div')
+    gallery.className = 'image-gallery'
+    img.parentNode?.insertBefore(gallery, img)
+    gallery.appendChild(img)
 
-  // 将所有图片移入画廊
-  imageArray.forEach(img => {
-    galleryContainer.appendChild(img)
+    console.log('Wrapped image', index + 1, 'in gallery')
   })
-
-  // 插入到预览区的开头
-  preview.insertBefore(galleryContainer, preview.firstChild)
 }
 
 // 智能链接处理 - 统一处理所有链接
