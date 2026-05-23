@@ -164,8 +164,59 @@ function setupImageGallery() {
     img.parentNode?.insertBefore(gallery, img)
     gallery.appendChild(img)
 
+    // 添加点击事件打开全屏查看器
+    img.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      openImageViewer(img.src)
+    })
+
     console.log('Wrapped image', index + 1, 'in gallery')
   })
+}
+
+// 全屏图片查看器
+function openImageViewer(imageSrc: string) {
+  const overlay = document.createElement('div')
+  overlay.className = 'image-viewer-overlay'
+
+  const img = document.createElement('img')
+  img.src = imageSrc
+  overlay.appendChild(img)
+
+  const closeBtn = document.createElement('div')
+  closeBtn.className = 'image-viewer-close'
+  closeBtn.textContent = '×'
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    closeImageViewer()
+  })
+  overlay.appendChild(closeBtn)
+
+  // 点击背景关闭
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeImageViewer()
+    }
+  })
+
+  // ESC键关闭
+  const escHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      closeImageViewer()
+      document.removeEventListener('keydown', escHandler)
+    }
+  }
+  document.addEventListener('keydown', escHandler)
+
+  document.body.appendChild(overlay)
+}
+
+function closeImageViewer() {
+  const overlay = document.querySelector('.image-viewer-overlay')
+  if (overlay) {
+    overlay.remove()
+  }
 }
 
 // 智能链接处理 - 统一处理所有链接
