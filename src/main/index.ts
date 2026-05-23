@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, Menu } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, Menu, net } from 'electron'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -47,7 +47,7 @@ ipcMain.handle('open-md-file', async () => {
 
   const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, {
     title: '选择 Markdown 文件',
-    filters: [{ name: 'Markdown', extensions: ['md'] }],
+    filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
     properties: ['openFile']
   })
 
@@ -56,6 +56,28 @@ ipcMain.handle('open-md-file', async () => {
   const filePath = filePaths[0]
   const content = fs.readFileSync(filePath, 'utf8')
   return { filePath, content }
+})
+
+ipcMain.handle('open-md-file-by-path', async (_event, filePath: string) => {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8')
+    return { filePath, content }
+  } catch {
+    return null
+  }
+})
+
+ipcMain.handle('fetch-url-content', async (_event, url: string) => {
+  try {
+    const response = await net.fetch(url)
+    if (!response.ok) {
+      return null
+    }
+    const content = await response.text()
+    return { url, content }
+  } catch {
+    return null
+  }
 })
 
 app.on('window-all-closed', () => app.quit())

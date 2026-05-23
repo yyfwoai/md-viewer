@@ -10,9 +10,13 @@ body { font-family: system-ui; background: #f6f6f6; }
   align-items: center;
 }
 
-#openBtn {
+#openBtn, #backBtn, #forwardBtn {
   padding: 6px 14px;
   cursor: pointer;
+}
+#backBtn:disabled, #forwardBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .path {
@@ -20,12 +24,40 @@ body { font-family: system-ui; background: #f6f6f6; }
   font-size: 14px;
 }
 
+.tabs {
+  background: #e8e8e8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 8px;
+  min-height: 30px;
+}
+
+.tab {
+  background: #d4d4d4;
+  padding: 4px 12px;
+  border-radius: 4px 4px 0 0;
+  font-size: 13px;
+  cursor: pointer;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tab:hover { background: #c4c4c4; }
+.tab.active { background: #fff; font-weight: 500; }
+.tab-close {
+  margin-left: 8px;
+  opacity: 0.5;
+}
+.tab-close:hover { opacity: 1; }
+
 .preview {
   padding: 30px;
   max-width: 900px;
   margin: 0 auto;
   background: white;
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 120px);
   line-height: 1.6;
 }
 
